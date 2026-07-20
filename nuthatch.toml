@@ -1,0 +1,30 @@
+[nest]
+name = "uniswap-v3"
+chain = "arbitrum-one"
+chain_id = 42161
+rpc_urls = [
+    "https://petko-rpc.infradao.tech/arbitrum",
+]
+schema_version = 1
+
+# The factory: the one contract with a fixed address. Its PoolCreated event announces every pool.
+[[contracts]]
+alias = "factory"
+address = "0x1f98431c8ad98523631ae4a59f267346ea31f984"
+start_block = 165
+abi = "abis/factory.json"
+
+# The template applied to every discovered pool. All pools share tables (pool__swap, pool__mint, …),
+# distinguished by the implicit `address` column.
+[[templates]]
+name = "pool"
+abi = "abis/pool.json"
+
+# The discovery rule: when the factory emits PoolCreated, the address in its `pool` param is indexed
+# under the `pool` template. One rule, every pool that has ever existed or ever will.
+[[factories]]
+watch = "factory"
+event = "PoolCreated"
+child_param = "pool"
+template = "pool"
+start = 165
