@@ -57,6 +57,24 @@ A **recent slice** (`--backfill N`) indexes pools created in that window and the
 free-RPC-friendly. A full-history, every-pool-since-launch backfill is a bigger job (a paid RPC tier or
 your own node); the workflow is identical.
 
+## Parity — checked against the canonical Uniswap V3 subgraph
+
+`checks/` pins this nest's decode against the official Uniswap V3 Arbitrum subgraph
+(`3V7ZY6muhxaQL5qvntX1CFXJ32W7BxXZTGTwmpH5J4t3`), queried at the **same block**, for the WETH/USDC
+0.05% pool (`0xC696…E8D0`). Raw on-chain units — byte-exact, no floating point:
+
+| metric @ block 485,300,000 | nuthatch | subgraph | |
+|---|---|---|---|
+| `sqrtPriceX96` | `3419540503345272445389517` | `3419540503345272445389517` | exact |
+| `tick` | −201022 | −201022 | exact |
+| `liquidity` | `2712824308373787012` | `2712824308373787012` | exact |
+| windowed vol WETH (base) | `382317931565321634085` | 382.317931566 ×1e18 | exact |
+| windowed vol USDC (base) | `711461147736` | 711461.147736 ×1e6 | exact |
+
+Volume is windowed over (485,280,000, 485,300,000] — the subgraph stores cumulative totals, so the
+window is its diff between the two blocks (633 swaps). Run with `nuthatch check` once a backfill covers
+block 485,300,000 for the pool.
+
 ## Honest edges
 
 - **Token decimals / USD pricing** aren't here. Symbol and decimals require a contract call, which the
