@@ -3,7 +3,7 @@ name = "uniswap-v3"
 chain = "arbitrum-one"
 chain_id = 42161
 rpc_urls = [
-    "https://petko-rpc.infradao.tech/arbitrum",
+    "https://arb1.arbitrum.io/rpc",
 ]
 schema_version = 1
 
